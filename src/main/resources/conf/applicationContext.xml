@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.alibaba.com/schema/stat" default-autowire="byName"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.alibaba.com/schema/stat http://www.alibaba.com/schema/stat.xsd">
+
+    <!--spring配置文件： 声明service，dao，工具类等对象-->
+
+    <tx:annotation-driven/>
+    <context:property-placeholder location="classpath:conf/jdbc.properties" />
+
+    <!--声明数据源，连接数据库-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+
+        <property name="url" value="jdbc:mysql://rm-bp19m5a3kw1odh9d2so.mysql.rds.aliyuncs.com:3306/cdkey?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC&amp;rewriteBatchedStatements=true" />
+        <property name="username" value="yfj" />
+        <property name="password" value="Yfj123456789" />
+    </bean>
+
+    <!--SqlSessionFactoryBean创建SqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation"  value="classpath:conf/mybatis-config.xml" />
+    </bean>
+
+    <!--声明mybatis的扫描器，创建dao对象-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        <property name="basePackage" value="com.yfj.cdkey.dao"/>
+    </bean>
+<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+    <!--声明service的注解@Service所在的包名位置-->
+    <context:component-scan base-package="com.yfj.cdkey.service" />
+
+    <!--事务配置：注解的配置， aspectj的配置-->
+</beans>

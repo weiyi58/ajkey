@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yfj.cdkey.dao.CDKeyDao">
+
+    <insert id="addCDKey">
+        insert into cdkey(cdkey,registerTime,state,type) values(#{cdkey},#{registerTime},#{state},#{type})
+    </insert>
+    <select id="getCDKey" resultType="CDKey">
+        select * from cdkey where cdkey=#{cdkey}
+    </select>
+    <select id="query" resultType="CDKey">
+        select * from cdkey
+    </select>
+    <update id="activate">
+        update cdkey
+        set state = 1,
+        expireTime=#{expireTime},
+        pantTime=#{pantTime},
+        activationTime=#{activationTime}
+        where number=#{number}
+    </update>
+    <update id="heartcheck">
+        update cdkey
+        set lifeTime = IFNULL(lifeTime,0) + 10,
+        pantTime=#{pantTime}
+        where cdkey = #{cdkey}
+    </update>
+
+</mapper>
